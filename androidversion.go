@@ -67,7 +67,8 @@ func (version AndroidVersion) Equals(comparison AndroidVersion) bool {
 var (
 	ErrAndroidVersionSDKUnsupported     = errors.New("the supplied SDK is unsupported")
 	ErrAndroidVersionVersionUnsupported = errors.New("the supplied version is unsupported")
-	AndroidSDKToVersion                 = map[string]string{
+
+	AndroidSDKToVersion = map[string]string{
 		"30": "11.0",
 		"29": "10.0",
 		"28": "9.0",
