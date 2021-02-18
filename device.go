@@ -1,6 +1,9 @@
 package go_android_utils
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type Device struct {
 	AndroidId            AndroidID
@@ -101,6 +104,26 @@ func (device *Device) FromUserAgent(userAgent string) error {
 func (device Device) GetUserAgent() string {
 	// Returns the device string part of useragent, manually need to prefix and postfix it with data like what software/browser the user agent is supposed to be
 	return "(Linux; Android " + device.AndroidVersion.ToAndroidVersion() + "; " + strings.ToLower(device.Locale.ToLocale("-")) + "; " + device.Model + " Build/" + device.Build + ")"
+}
+
+const (
+	DeviceFormatKeyAndroidVersion  = ":andVers"
+	DeviceFormatKeyAndroidSDKLevel = ":andSDK"
+	DeviceFormatKeyLocale          = ":locale"
+	DeviceFormatKeyModel           = ":model"
+	DeviceFormatKeyBuild           = ":build"
+	DeviceFormatKeyDPI             = ":dpi"
+)
+
+func (device Device) FormatUserAgent(format string) string {
+	// TODO: Cache this? replace is inefficient everytime?
+	format = strings.ReplaceAll(format, DeviceFormatKeyAndroidVersion, device.AndroidVersion.ToAndroidVersion())
+	format = strings.ReplaceAll(format, DeviceFormatKeyAndroidSDKLevel, device.AndroidVersion.ToAndroidSDK())
+	format = strings.ReplaceAll(format, DeviceFormatKeyLocale, strings.ToLower(device.Locale.ToLocale("-")))
+	format = strings.ReplaceAll(format, DeviceFormatKeyModel, device.Model)
+	format = strings.ReplaceAll(format, DeviceFormatKeyBuild, device.Build)
+	format = strings.ReplaceAll(format, DeviceFormatKeyDPI, strconv.Itoa(device.DPI))
+	return format
 }
 
 func (device Device) GetFingerprint() string {
