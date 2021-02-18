@@ -27,14 +27,18 @@ func (id *AndroidID) Random() error {
 	return err
 }
 
-func (id AndroidID) toDecimalString() string {
+func (id AndroidID) ToDecimalString() string {
 	return strconv.FormatUint(id.id, 10)
 }
 
-func (id AndroidID) toHexString() string {
+func (id AndroidID) ToHexString() string {
 	return strconv.FormatUint(id.id, 16)
 }
 
 func (id AndroidID) Equals(comparison AndroidID) bool {
 	return id.id == comparison.id
+}
+
+func (id AndroidID) IsNull() bool {
+	return id.id < 1
 }
