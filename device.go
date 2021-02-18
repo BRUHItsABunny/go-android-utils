@@ -3,17 +3,20 @@ package go_android_utils
 import "strings"
 
 type Device struct {
-	AndroidId          AndroidID
-	Locale             Locale         // en-us
-	AndroidVersion     AndroidVersion // 9 (translates to sdk 28)
-	Device             string         // OnePlus5
-	Manufacturer       string         // OnePlus
-	Model              string         // ONEPLUS A5000
-	Product            string         // OnePlus5
-	Build              string         // PKQ1.180716.001
-	Type               string         // user
-	Tags               string         // release-keys
-	IncrementalVersion string         // 2002242003
+	AndroidId            AndroidID
+	Locale               Locale         // en-us
+	AndroidVersion       AndroidVersion // 9 (translates to sdk 28)
+	Device               string         // OnePlus5
+	Manufacturer         string         // OnePlus
+	Model                string         // ONEPLUS A5000
+	Product              string         // OnePlus5
+	Build                string         // PKQ1.180716.001
+	Type                 string         // user
+	Tags                 string         // release-keys
+	IncrementalVersion   string         // 2002242003
+	DPI                  int
+	ResolutionHorizontal int
+	ResolutionVertical   int
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
