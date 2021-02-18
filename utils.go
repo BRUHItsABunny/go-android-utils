@@ -8,3 +8,12 @@ func stringsAreNotNull(elems ...string) (int, bool) {
 	}
 	return -1, true
 }
+
+func strInSlice(haystack []string, needle string) (int, bool) {
+	for i, elem := range haystack {
+		if elem == needle {
+			return i, true
+		}
+	}
+	return -1, false
+}
