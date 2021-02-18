@@ -24,47 +24,22 @@ type Device struct {
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
-	// dev=OnePlus5, man=OnePlus, mod="ONEPLUS A5000", pro=OnePlus5, fin="OnePlus/OnePlus5/OnePlus5:9/PKQ1.180716.001/2002242003:user/release-keys", sdk=28
+	// "OnePlus/OnePlus5/OnePlus5:9/PKQ1.180716.001/2002242003:user/release-keys"
 	var err error
-	fingerprint = strings.ReplaceAll(fingerprint, "\"", "")
-	mainParts := strings.Split(fingerprint, ", ")
-	for _, mainPart := range mainParts {
-		subParts := strings.Split(mainPart, "=")
-		switch subParts[0] {
-		case "dev":
-			device.Device = subParts[1]
-			break
-		case "man":
-			device.Manufacturer = subParts[1]
-			break
-		case "mod":
-			device.Model = subParts[1]
-			break
-		case "pro":
-			device.Product = subParts[1]
-			break
-		case "fin":
-			// "OnePlus/OnePlus5/OnePlus5:9/PKQ1.180716.001/2002242003:user/release-keys"
-			fingerprintParts := strings.Split(subParts[1], "/")
-			device.Build = fingerprintParts[3]
-			OTAParts := strings.Split(fingerprintParts[4], ":")
-			device.IncrementalVersion = OTAParts[0]
-			device.Type = OTAParts[1]
-			device.Tags = fingerprintParts[5]
-			break
-		case "sdk":
-			androidVersion := AndroidVersion{}
-			err = androidVersion.FromAndroidSDK(subParts[1])
-			if err == nil {
-				device.AndroidVersion = androidVersion
-			}
-			break
-		}
-		if err != nil {
-			break
-		}
+	mainParts := strings.Split(fingerprint, "/")
+	device.Manufacturer = mainParts[0]
+	device.Product = mainParts[1]
+	subParts := strings.Split(mainParts[2], ":")
+	device.Device = subParts[0]
+	device.AndroidVersion = AndroidVersion{}
+	err = device.AndroidVersion.FromAndroidVersion(subParts[1])
+	if err == nil {
+		device.Build = mainParts[3]
+		subParts = strings.Split(mainParts[4], ":")
+		device.IncrementalVersion = subParts[0]
+		device.Type = subParts[1]
+		device.Tags = mainParts[5]
 	}
-
 	return err
 }
 
@@ -127,5 +102,5 @@ func (device Device) FormatUserAgent(format string) string {
 }
 
 func (device Device) GetFingerprint() string {
-	return "dev=" + device.Device + ", man=" + device.Manufacturer + ", mod=\"" + device.Model + "\", pro=" + device.Product + ", fin=\"" + device.Manufacturer + "/" + device.Product + "/" + device.Device + ":" + device.AndroidVersion.ToAndroidVersion() + "/" + device.Build + "/" + device.IncrementalVersion + ":" + device.Type + "/" + device.Tags + "\", sdk=" + device.AndroidVersion.ToAndroidSDK()
+	return device.Manufacturer + "/" + device.Product + "/" + device.Device + ":" + device.AndroidVersion.ToAndroidVersion() + "/" + device.Build + "/" + device.IncrementalVersion + ":" + device.Type + "/" + device.Tags
 }
