@@ -17,6 +17,7 @@ type Device struct {
 	DPI                  int
 	ResolutionHorizontal int
 	ResolutionVertical   int
+	ABIS                 []string
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
