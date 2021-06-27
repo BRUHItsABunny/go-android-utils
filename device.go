@@ -89,6 +89,7 @@ const (
 	DeviceFormatKeyBuild           = ":build"
 	DeviceFormatKeyDPI             = ":dpi"
 	DeviceFormatKeyDevice          = ":device"
+	DeviceFormatKeyManufacturer    = ":manufacturer"
 )
 
 func (device Device) FormatUserAgent(format string) string {
@@ -100,6 +101,7 @@ func (device Device) FormatUserAgent(format string) string {
 	format = strings.ReplaceAll(format, DeviceFormatKeyBuild, device.Build)
 	format = strings.ReplaceAll(format, DeviceFormatKeyDPI, strconv.Itoa(device.DPI))
 	format = strings.ReplaceAll(format, DeviceFormatKeyDevice, device.Device)
+	format = strings.ReplaceAll(format, DeviceFormatKeyManufacturer, device.Manufacturer)
 	return format
 }
 
