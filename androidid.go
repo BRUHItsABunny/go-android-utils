@@ -10,6 +10,12 @@ type AndroidID struct {
 	id uint64
 }
 
+func NewAndroidID() *AndroidID {
+	result := &AndroidID{}
+	_ = result.Random()
+	return result
+}
+
 func (id *AndroidID) FromHex(idStr string) error {
 	result, err := strconv.ParseUint(idStr, 16, 64)
 	if err == nil {

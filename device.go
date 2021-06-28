@@ -6,21 +6,21 @@ import (
 )
 
 type Device struct {
-	AndroidId            AndroidID
-	Locale               Locale         // en-us
-	AndroidVersion       AndroidVersion // 9 (translates to sdk 28)
-	Device               string         // OnePlus5
-	Manufacturer         string         // OnePlus
-	Model                string         // ONEPLUS A5000
-	Product              string         // OnePlus5
-	Build                string         // PKQ1.180716.001
-	Type                 string         // user
-	Tags                 string         // release-keys
-	IncrementalVersion   string         // 2002242003
-	DPI                  int
-	ResolutionHorizontal int
-	ResolutionVertical   int
-	Architecture         Architecture
+	AndroidId            *AndroidID      // random
+	Locale               *Locale         // en-us
+	AndroidVersion       *AndroidVersion // 9 (translates to sdk 28)
+	Device               string          // OnePlus5
+	Manufacturer         string          // OnePlus
+	Model                string          // ONEPLUS A5000
+	Product              string          // OnePlus5
+	Build                string          // PKQ1.180716.001
+	Type                 string          // user
+	Tags                 string          // release-keys
+	IncrementalVersion   string          // 2002242003
+	DPI                  int             //
+	ResolutionHorizontal int             //
+	ResolutionVertical   int             //
+	Architecture         *Architecture   // ARM64
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
@@ -31,7 +31,7 @@ func (device *Device) FromFingerprint(fingerprint string) error {
 	device.Product = mainParts[1]
 	subParts := strings.Split(mainParts[2], ":")
 	device.Device = subParts[0]
-	device.AndroidVersion = AndroidVersion{}
+	device.AndroidVersion = &AndroidVersion{}
 	err = device.AndroidVersion.FromAndroidVersion(subParts[1])
 	if err == nil {
 		device.Build = mainParts[3]
@@ -54,13 +54,13 @@ func (device *Device) FromUserAgent(userAgent string) error {
 			androidVersion := AndroidVersion{}
 			err = androidVersion.FromAndroidVersion(strings.Split(elem, " ")[1])
 			if err == nil {
-				device.AndroidVersion = androidVersion
+				device.AndroidVersion = &androidVersion
 			}
 		} else if strings.Contains(elem, "-") {
 			locale := Locale{}
 			err = locale.FromLocale(elem)
 			if err == nil {
-				device.Locale = locale
+				device.Locale = &locale
 			}
 		} else if strings.Contains(elem, "Build/") {
 			parts := strings.Split(elem, " Build/")
