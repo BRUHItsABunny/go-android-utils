@@ -1,25 +1,58 @@
 package go_android_utils
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
+	"sync"
+)
 
 type Architecture struct {
+	sync.RWMutex
 	cpu string
+}
+
+type auxArchitecture struct {
+	Architecture string `json:"architecture"`
 }
 
 func (architecture *Architecture) FromArchitecture(architectureStr string) error {
 	_, ok := strInSlice(AvailableArchitectures, architectureStr)
 	if ok {
+		architecture.Lock()
 		architecture.cpu = architectureStr
+		architecture.Unlock()
+		return nil
 	}
 	return ErrArchitectureNotSupported
 }
 
-func (architecture Architecture) ToArchitecture() string {
-	return architecture.cpu
+func (architecture *Architecture) ToArchitecture() string {
+	architecture.RLock()
+	result := architecture.cpu
+	architecture.RUnlock()
+	return result
 }
 
-func (architecture Architecture) ToABI() []string {
-	return DefaultArchitectures[architecture.cpu]
+func (architecture *Architecture) ToABI() []string {
+	architecture.RLock()
+	result := architecture.cpu
+	architecture.RUnlock()
+	return DefaultArchitectures[result]
+}
+
+func (architecture *Architecture) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&auxArchitecture{
+		Architecture: architecture.ToArchitecture(),
+	})
+}
+
+func (architecture *Architecture) UnmarshalJSON(data []byte) error {
+	aux := &auxArchitecture{}
+	err := json.Unmarshal(data, aux)
+	if err == nil {
+		err = architecture.FromArchitecture(aux.Architecture)
+	}
+	return err
 }
 
 var (

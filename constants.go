@@ -1,7 +1,10 @@
 package go_android_utils
 
+import "time"
+
 var (
 	DefaultAndroidID       = NewAndroidID()
+	DefaultTimeZone        = NewTimeZoneFromLocation(time.Local)
 	DefaultDeviceOnePlus7T = Device{
 		AndroidId:            NewAndroidID(),
 		Locale:               &Locale{Language: "en", Country: "us"},
@@ -18,5 +21,6 @@ var (
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   2400,
 		Architecture:         &Architecture{cpu: "arm64"},
+		TimeZone:             NewTimeZoneFromLocation(time.UTC),
 	}
 )

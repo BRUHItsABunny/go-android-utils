@@ -1,11 +1,14 @@
 package go_android_utils
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Device struct {
+	sync.RWMutex
 	AndroidId            *AndroidID      // random
 	Locale               *Locale         // en-us
 	AndroidVersion       *AndroidVersion // 9 (translates to sdk 28)
@@ -21,10 +24,31 @@ type Device struct {
 	ResolutionHorizontal int             //
 	ResolutionVertical   int             //
 	Architecture         *Architecture   // ARM64
+	TimeZone             *TimeZone       // America/Chicago
+}
+
+type auxDevice struct {
+	AndroidId            *AndroidID      `json:"android_id"`
+	Locale               *Locale         `json:"locale"`
+	AndroidVersion       *AndroidVersion `json:"android_version"`
+	Device               string          `json:"device"`
+	Manufacturer         string          `json:"manufacturer"`
+	Model                string          `json:"model"`
+	Product              string          `json:"product"`
+	Build                string          `json:"build"`
+	Type                 string          `json:"type"`
+	Tags                 string          `json:"tags"`
+	IncrementalVersion   string          `json:"rom_version"`
+	DPI                  int             `json:"dpi"`
+	ResolutionHorizontal int             `json:"resolution_horizontal"`
+	ResolutionVertical   int             `json:"resolution_vertical"`
+	Architecture         *Architecture   `json:"architecture"`
+	TimeZone             *TimeZone       `json:"time_zone"`
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
 	// "OnePlus/OnePlus5/OnePlus5:9/PKQ1.180716.001/2002242003:user/release-keys"
+	device.Lock()
 	var err error
 	mainParts := strings.Split(fingerprint, "/")
 	device.Manufacturer = mainParts[0]
@@ -40,11 +64,13 @@ func (device *Device) FromFingerprint(fingerprint string) error {
 		device.Type = subParts[1]
 		device.Tags = mainParts[5]
 	}
+	device.Unlock()
 	return err
 }
 
 func (device *Device) FromUserAgent(userAgent string) error {
 	// Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D)
+	device.Lock()
 	var err error
 	indexStart := strings.Index(userAgent, "(")
 	indexStop := strings.Index(userAgent, ")")
@@ -72,13 +98,17 @@ func (device *Device) FromUserAgent(userAgent string) error {
 			break
 		}
 	}
+	device.Unlock()
 
 	return err
 }
 
-func (device Device) GetUserAgent() string {
+func (device *Device) GetUserAgent() string {
 	// Returns the device string part of useragent, manually need to prefix and postfix it with data like what software/browser the user agent is supposed to be
-	return "(Linux; Android " + device.AndroidVersion.ToAndroidVersion() + "; " + strings.ToLower(device.Locale.ToLocale("-")) + "; " + device.Model + " Build/" + device.Build + ")"
+	device.RLock()
+	result := "(Linux; Android " + device.AndroidVersion.ToAndroidVersion() + "; " + strings.ToLower(device.Locale.ToLocale("-")) + "; " + device.Model + " Build/" + device.Build + ")"
+	device.RUnlock()
+	return result
 }
 
 const (
@@ -92,8 +122,9 @@ const (
 	DeviceFormatKeyManufacturer    = ":manufacturer"
 )
 
-func (device Device) FormatUserAgent(format string) string {
+func (device *Device) FormatUserAgent(format string) string {
 	// TODO: Cache this? replace is inefficient everytime?
+	device.RLock()
 	format = strings.ReplaceAll(format, DeviceFormatKeyAndroidVersion, device.AndroidVersion.ToAndroidVersion())
 	format = strings.ReplaceAll(format, DeviceFormatKeyAndroidSDKLevel, device.AndroidVersion.ToAndroidSDK())
 	format = strings.ReplaceAll(format, DeviceFormatKeyLocale, strings.ToLower(device.Locale.ToLocale("-")))
@@ -102,9 +133,65 @@ func (device Device) FormatUserAgent(format string) string {
 	format = strings.ReplaceAll(format, DeviceFormatKeyDPI, strconv.Itoa(device.DPI))
 	format = strings.ReplaceAll(format, DeviceFormatKeyDevice, device.Device)
 	format = strings.ReplaceAll(format, DeviceFormatKeyManufacturer, device.Manufacturer)
+	device.RUnlock()
 	return format
 }
 
-func (device Device) GetFingerprint() string {
-	return device.Manufacturer + "/" + device.Product + "/" + device.Device + ":" + device.AndroidVersion.ToAndroidVersion() + "/" + device.Build + "/" + device.IncrementalVersion + ":" + device.Type + "/" + device.Tags
+func (device *Device) GetFingerprint() string {
+	device.RLock()
+	result := device.Manufacturer + "/" + device.Product + "/" + device.Device + ":" + device.AndroidVersion.ToAndroidVersion() + "/" + device.Build + "/" + device.IncrementalVersion + ":" + device.Type + "/" + device.Tags
+	device.RUnlock()
+	return result
+}
+
+func (device *Device) MarshalJSON() ([]byte, error) {
+
+	device.RLock()
+	aux := &auxDevice{
+		AndroidId:            device.AndroidId,
+		Locale:               device.Locale,
+		AndroidVersion:       device.AndroidVersion,
+		Device:               device.Device,
+		Manufacturer:         device.Manufacturer,
+		Model:                device.Model,
+		Product:              device.Product,
+		Build:                device.Build,
+		Type:                 device.Type,
+		Tags:                 device.Tags,
+		IncrementalVersion:   device.IncrementalVersion,
+		DPI:                  device.DPI,
+		ResolutionHorizontal: device.ResolutionHorizontal,
+		ResolutionVertical:   device.ResolutionVertical,
+		Architecture:         device.Architecture,
+		TimeZone:             device.TimeZone,
+	}
+	device.RUnlock()
+
+	return json.Marshal(aux)
+}
+
+func (device *Device) UnmarshalJSON(data []byte) error {
+	aux := &auxDevice{}
+	err := json.Unmarshal(data, aux)
+	if err == nil {
+		device.Lock()
+		device.AndroidId = aux.AndroidId
+		device.Locale = aux.Locale
+		device.AndroidVersion = aux.AndroidVersion
+		device.Device = aux.Device
+		device.Manufacturer = aux.Manufacturer
+		device.Model = aux.Model
+		device.Product = aux.Product
+		device.Build = aux.Build
+		device.Type = aux.Type
+		device.Tags = aux.Tags
+		device.IncrementalVersion = aux.IncrementalVersion
+		device.DPI = aux.DPI
+		device.ResolutionHorizontal = aux.ResolutionHorizontal
+		device.ResolutionVertical = aux.ResolutionVertical
+		device.Architecture = aux.Architecture
+		device.TimeZone = aux.TimeZone
+		device.Unlock()
+	}
+	return err
 }

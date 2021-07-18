@@ -1,13 +1,20 @@
 package go_android_utils
 
 import (
+	"encoding/json"
 	"errors"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type AndroidVersion struct {
+	sync.RWMutex
 	sdk int
+}
+
+type auxAndroidVersion struct {
+	SDK int `json:"sdk"`
 }
 
 func (version *AndroidVersion) FromAndroidVersion(versionStr string) error {
@@ -18,7 +25,8 @@ func (version *AndroidVersion) FromAndroidVersion(versionStr string) error {
 	}
 	sdk, ok := AndroidVersionToSDK[versionStr]
 	if ok {
-		version.sdk, _ = strconv.Atoi(sdk)
+		sdkN, _ := strconv.Atoi(sdk)
+		version.SetSDK(sdkN)
 	} else {
 		err = ErrAndroidVersionVersionUnsupported
 	}
@@ -30,15 +38,15 @@ func (version *AndroidVersion) FromAndroidSDK(sdkStr string) error {
 	_, ok := AndroidSDKToVersion[sdkStr]
 	if ok {
 		sdk, _ := strconv.ParseInt(sdkStr, 10, 64)
-		version.sdk = int(sdk)
+		version.SetSDK(int(sdk))
 	} else {
 		err = ErrAndroidVersionSDKUnsupported
 	}
 	return err
 }
 
-func (version AndroidVersion) ToAndroidVersion() string {
-	versionStr := AndroidSDKToVersion[strconv.Itoa(version.sdk)]
+func (version *AndroidVersion) ToAndroidVersion() string {
+	versionStr := AndroidSDKToVersion[strconv.Itoa(version.GetSDK())]
 	better, ok := AndroidVersionToAndroidVersion[versionStr]
 	if ok {
 		return better
@@ -46,20 +54,48 @@ func (version AndroidVersion) ToAndroidVersion() string {
 	return versionStr
 }
 
-func (version AndroidVersion) ToAndroidSDK() string {
-	return strconv.Itoa(version.sdk)
+func (version *AndroidVersion) ToAndroidSDK() string {
+	return strconv.Itoa(version.GetSDK())
 }
 
-func (version AndroidVersion) IsOlder(comparison AndroidVersion) bool {
-	return version.sdk < comparison.sdk
+func (version *AndroidVersion) IsOlder(comparison AndroidVersion) bool {
+	return version.GetSDK() < comparison.GetSDK()
 }
 
-func (version AndroidVersion) IsNewer(comparison AndroidVersion) bool {
-	return version.sdk > comparison.sdk
+func (version *AndroidVersion) IsNewer(comparison AndroidVersion) bool {
+	return version.GetSDK() > comparison.GetSDK()
 }
 
-func (version AndroidVersion) Equals(comparison AndroidVersion) bool {
-	return version.sdk == comparison.sdk
+func (version *AndroidVersion) Equals(comparison AndroidVersion) bool {
+	return version.GetSDK() == comparison.GetSDK()
+}
+
+func (version *AndroidVersion) GetSDK() int {
+	version.RLock()
+	result := version.sdk
+	version.RUnlock()
+	return result
+}
+
+func (version *AndroidVersion) SetSDK(sdk int) {
+	version.Lock()
+	version.sdk = sdk
+	version.Unlock()
+}
+
+func (version *AndroidVersion) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&auxAndroidVersion{
+		SDK: version.GetSDK(),
+	})
+}
+
+func (version *AndroidVersion) UnmarshalJSON(data []byte) error {
+	aux := &auxAndroidVersion{}
+	err := json.Unmarshal(data, aux)
+	if err == nil {
+		version.SetSDK(aux.SDK)
+	}
+	return err
 }
 
 // DATABASE
