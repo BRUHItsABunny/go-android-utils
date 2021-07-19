@@ -195,3 +195,38 @@ func (device *Device) UnmarshalJSON(data []byte) error {
 	}
 	return err
 }
+
+func (device *Device) GetAndroidID() *AndroidID {
+	device.RLock()
+	result := device.AndroidId
+	device.RUnlock()
+	return result
+}
+
+func (device *Device) GetLocale() *Locale {
+	device.RLock()
+	result := device.Locale
+	device.RUnlock()
+	return result
+}
+
+func (device *Device) GetAndroidVersion() *AndroidVersion {
+	device.RLock()
+	result := device.AndroidVersion
+	device.RUnlock()
+	return result
+}
+
+func (device *Device) GetArchitecture() *Architecture {
+	device.RLock()
+	result := device.Architecture
+	device.RUnlock()
+	return result
+}
+
+func (device *Device) GetTimeZone() *TimeZone {
+	device.RLock()
+	result := device.TimeZone
+	device.RUnlock()
+	return result
+}
