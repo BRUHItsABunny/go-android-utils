@@ -58,15 +58,15 @@ func (version *AndroidVersion) ToAndroidSDK() string {
 	return strconv.Itoa(version.GetSDK())
 }
 
-func (version *AndroidVersion) IsOlder(comparison AndroidVersion) bool {
+func (version *AndroidVersion) IsOlder(comparison *AndroidVersion) bool {
 	return version.GetSDK() < comparison.GetSDK()
 }
 
-func (version *AndroidVersion) IsNewer(comparison AndroidVersion) bool {
+func (version *AndroidVersion) IsNewer(comparison *AndroidVersion) bool {
 	return version.GetSDK() > comparison.GetSDK()
 }
 
-func (version *AndroidVersion) Equals(comparison AndroidVersion) bool {
+func (version *AndroidVersion) Equals(comparison *AndroidVersion) bool {
 	return version.GetSDK() == comparison.GetSDK()
 }
 

@@ -1,6 +1,7 @@
 package go_android_utils
 
 import (
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"math/rand"
@@ -48,7 +49,12 @@ func (id *AndroidID) ToHexString() string {
 	return strconv.FormatUint(id.GetID(), 16)
 }
 
-func (id *AndroidID) Equals(comparison AndroidID) bool {
+func (id *AndroidID) ToBase64String() string {
+	hByte, _ := hex.DecodeString(id.ToHexString())
+	return base64.StdEncoding.EncodeToString(hByte)
+}
+
+func (id *AndroidID) Equals(comparison *AndroidID) bool {
 	return id.GetID() == comparison.GetID()
 }
 
