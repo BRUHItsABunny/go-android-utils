@@ -5,11 +5,9 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 type AndroidVersion struct {
-	sync.RWMutex
 	sdk int
 }
 
@@ -71,16 +69,12 @@ func (version *AndroidVersion) Equals(comparison *AndroidVersion) bool {
 }
 
 func (version *AndroidVersion) GetSDK() int {
-	version.RLock()
 	result := version.sdk
-	version.RUnlock()
 	return result
 }
 
 func (version *AndroidVersion) SetSDK(sdk int) {
-	version.Lock()
 	version.sdk = sdk
-	version.Unlock()
 }
 
 func (version *AndroidVersion) MarshalJSON() ([]byte, error) {

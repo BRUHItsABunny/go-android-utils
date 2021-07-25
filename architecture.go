@@ -3,11 +3,9 @@ package go_android_utils
 import (
 	"encoding/json"
 	"errors"
-	"sync"
 )
 
 type Architecture struct {
-	sync.RWMutex
 	cpu string
 }
 
@@ -18,25 +16,19 @@ type auxArchitecture struct {
 func (architecture *Architecture) FromArchitecture(architectureStr string) error {
 	_, ok := strInSlice(AvailableArchitectures, architectureStr)
 	if ok {
-		architecture.Lock()
 		architecture.cpu = architectureStr
-		architecture.Unlock()
 		return nil
 	}
 	return ErrArchitectureNotSupported
 }
 
 func (architecture *Architecture) ToArchitecture() string {
-	architecture.RLock()
 	result := architecture.cpu
-	architecture.RUnlock()
 	return result
 }
 
 func (architecture *Architecture) ToABI() []string {
-	architecture.RLock()
 	result := architecture.cpu
-	architecture.RUnlock()
 	return DefaultArchitectures[result]
 }
 

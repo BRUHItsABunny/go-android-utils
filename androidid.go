@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 	"math/rand"
 	"strconv"
-	"sync"
 )
 
 type AndroidID struct {
-	sync.RWMutex
 	id uint64
 }
 
@@ -63,16 +61,12 @@ func (id *AndroidID) IsNull() bool {
 }
 
 func (id *AndroidID) GetID() uint64 {
-	id.RLock()
 	result := id.id
-	id.RUnlock()
 	return result
 }
 
 func (id *AndroidID) SetID(idN uint64) {
-	id.Lock()
 	id.id = idN
-	id.Unlock()
 }
 
 // JSON Custom marshalling, required to even save AID at all
