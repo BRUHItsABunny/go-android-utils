@@ -19,7 +19,7 @@ var DeviceDB = map[string]string{
 
 var DeviceDBKeys = []string{
 	// "oneplus3",
-	// "oneplus5",
+	"oneplus5",
 	"oneplus7t",
 	// "oneplus9",
 	"oneplus9pro",
