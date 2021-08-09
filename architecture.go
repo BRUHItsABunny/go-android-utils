@@ -14,7 +14,7 @@ type auxArchitecture struct {
 }
 
 func (architecture *Architecture) FromArchitecture(architectureStr string) error {
-	_, ok := strInSlice(AvailableArchitectures, architectureStr)
+	_, ok := DefaultArchitectures[architectureStr]
 	if ok {
 		architecture.cpu = architectureStr
 		return nil

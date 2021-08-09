@@ -82,6 +82,11 @@ func (locale *Locale) GetCountry() string {
 	return result
 }
 
+func (locale *Locale) GetCountryISO() string {
+	result := locale.Country
+	return strings.ToUpper(result)
+}
+
 func (locale *Locale) MarshalJSON() ([]byte, error) {
 
 	aux := &auxLocale{

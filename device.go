@@ -23,6 +23,7 @@ type Device struct {
 	ResolutionVertical   int             //
 	Architecture         *Architecture   // ARM64
 	TimeZone             *TimeZone       // America/Chicago
+	GPSLocation          *GPSLocation
 }
 
 type auxDevice struct {
@@ -42,6 +43,7 @@ type auxDevice struct {
 	ResolutionVertical   int             `json:"resolution_vertical"`
 	Architecture         *Architecture   `json:"architecture"`
 	TimeZone             *TimeZone       `json:"time_zone"`
+	GPSLocation          *GPSLocation    `json:"gps_location"`
 }
 
 func (device *Device) FromFingerprint(fingerprint string) error {
