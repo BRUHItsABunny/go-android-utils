@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package android_utils;
 option go_package = "github.com/BRUHItsABunny/go-android-utils";
 
 message AndroidID {
