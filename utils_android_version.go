@@ -21,7 +21,7 @@ func AndroidVersionFromVersionString(versionStr string) (AndroidVersion, error) 
 	if len(versionSplits) == 1 {
 		versionSplits = append(versionSplits, "0")
 	}
-	val, ok := AndroidVersion_value["AndroidVersion_"+strings.ToUpper(strings.Join(versionSplits[:2], "_"))]
+	val, ok := AndroidVersion_value["V"+strings.ToUpper(strings.Join(versionSplits[:2], "_"))]
 	if !ok {
 		err = ErrAndroidVersionVersionUnsupported
 		val = 0

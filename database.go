@@ -17,7 +17,7 @@ var DeviceDB = map[string]*Device{
 			Language:   "en",
 			CountryISO: "US",
 		},
-		Version:              AndroidVersion_AndroidVersion_9_0,
+		Version:              AndroidVersion_V9_0,
 		Device:               "OnePlus5",
 		Manufacturer:         "OnePlus",
 		Model:                "ONEPLUS A5000",
@@ -29,14 +29,14 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   1920,
-		Architecture:         Architecture_Architecture_ARM64,
+		Architecture:         Architecture_ARM64,
 	},
 	"oneplus7t": {
 		Locale: &Locale{
 			Language:   "en",
 			CountryISO: "US",
 		},
-		Version:              AndroidVersion_AndroidVersion_10_0,
+		Version:              AndroidVersion_V10_0,
 		Device:               "OnePlus7T",
 		Manufacturer:         "OnePlus",
 		Model:                "HD1905",
@@ -48,7 +48,7 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   2400,
-		Architecture:         Architecture_Architecture_ARM64,
+		Architecture:         Architecture_ARM64,
 	},
 	// "oneplus9": "",
 	"oneplus9pro": {
@@ -57,7 +57,7 @@ var DeviceDB = map[string]*Device{
 			Language:   "en",
 			CountryISO: "US",
 		},
-		Version:              AndroidVersion_AndroidVersion_11_0,
+		Version:              AndroidVersion_V11_0,
 		Device:               "OnePlus9Pro",
 		Manufacturer:         "OnePlus",
 		Model:                "LE2125",
@@ -69,7 +69,7 @@ var DeviceDB = map[string]*Device{
 		DPI:                  600,
 		ResolutionHorizontal: 1440,
 		ResolutionVertical:   3216,
-		Architecture:         Architecture_Architecture_ARM64,
+		Architecture:         Architecture_ARM64,
 	},
 }
 

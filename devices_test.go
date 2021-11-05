@@ -29,6 +29,7 @@ func TestRandomDevices(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		device := GetRandomDevice()
 		fmt.Println(device.String())
+		fmt.Println(device.Location.ProviderString())
 		time.Sleep(5 * time.Second)
 	}
 }

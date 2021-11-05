@@ -8,38 +8,38 @@ message AndroidID {
 
 enum AndroidVersion {
     AndroidVersion_NONE = 0;
-    AndroidVersion_4_0 = 15;
-    AndroidVersion_4_1 = 16;
-    AndroidVersion_4_2 = 17;
-    AndroidVersion_4_3 = 18;
-    AndroidVersion_4_4 = 19;
-    AndroidVersion_4_4W = 20;
-    AndroidVersion_5_0 = 21;
-    AndroidVersion_5_1 = 22;
-    AndroidVersion_6_0 = 23;
-    AndroidVersion_7_0 = 24;
-    AndroidVersion_7_1 = 25;
-    AndroidVersion_8_0 = 26;
-    AndroidVersion_8_1 = 27;
-    AndroidVersion_9_0 = 28;
-    AndroidVersion_10_0 = 29;
-    AndroidVersion_11_0 = 30;
-    AndroidVersion_12_0 = 31;
+    V4_0 = 15;
+    V4_1 = 16;
+    V4_2 = 17;
+    V4_3 = 18;
+    V4_4 = 19;
+    V4_4W = 20;
+    V5_0 = 21;
+    V5_1 = 22;
+    V6_0 = 23;
+    V7_0 = 24;
+    V7_1 = 25;
+    V8_0 = 26;
+    V8_1 = 27;
+    V9_0 = 28;
+    V10_0 = 29;
+    V11_0 = 30;
+    V12_0 = 31;
 }
 
 enum Architecture {
-    Architecture_NONE = 0;
-    Architecture_ARMEABI = 1;
-    Architecture_ARM64 = 2;
-    Architecture_X86 = 3;
-    Architecture_X86_64 = 4;
+   Architecture_NONE = 0;
+   ARMEABI = 1;
+   ARM64 = 2;
+   X86 = 3;
+   X86_64 = 4;
 }
 
 enum LocationProvider {
     LocationProvider_NONE = 0; // Treat as random
-    LocationProvider_GPS = 1;
-    LocationProvider_NETWORK = 2;
-    LocationProvider_PASIVE = 3;
+    GPS = 1;
+    NETWORK = 2;
+    PASSIVE = 3;
 }
 
 message GPSLocation {
