@@ -23,6 +23,12 @@ func strInSlice(haystack []string, needle string) (int, bool) {
 	return -1, false
 }
 
+func randomInt(min, max int) int {
+	s := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(s)
+	return r.Intn(max-min) + min
+}
+
 func randomStrSlice(strSlice []string) string {
 	s := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(s)

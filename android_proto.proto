@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+option go_package = "github.com/BRUHItsABunny/go-android-utils";
+
+message AndroidID {
+  uint64 id = 1;
+}
+
+enum AndroidVersion {
+    AndroidVersion_NONE = 0;
+    AndroidVersion_4_0 = 15;
+    AndroidVersion_4_1 = 16;
+    AndroidVersion_4_2 = 17;
+    AndroidVersion_4_3 = 18;
+    AndroidVersion_4_4 = 19;
+    AndroidVersion_4_4W = 20;
+    AndroidVersion_5_0 = 21;
+    AndroidVersion_5_1 = 22;
+    AndroidVersion_6_0 = 23;
+    AndroidVersion_7_0 = 24;
+    AndroidVersion_7_1 = 25;
+    AndroidVersion_8_0 = 26;
+    AndroidVersion_8_1 = 27;
+    AndroidVersion_9_0 = 28;
+    AndroidVersion_10_0 = 29;
+    AndroidVersion_11_0 = 30;
+    AndroidVersion_12_0 = 31;
+}
+
+enum Architecture {
+    Architecture_NONE = 0;
+    Architecture_ARMEABI = 1;
+    Architecture_ARM64 = 2;
+    Architecture_X86 = 3;
+    Architecture_X86_64 = 4;
+}
+
+enum LocationProvider {
+    LocationProvider_NONE = 0; // Treat as random
+    LocationProvider_GPS = 1;
+    LocationProvider_NETWORK = 2;
+    LocationProvider_PASIVE = 3;
+}
+
+message GPSLocation {
+  double longitude = 1;
+  double latitude = 2;
+  double altitude = 3;
+  LocationProvider provider = 4;
+}
+
+message Locale {
+  string language = 1;
+  string countryISO = 2;
+}
+
+message Timezone {
+  string name = 1;
+}
+
+message Device {
+  AndroidID id = 1;
+  Locale locale = 2;
+  AndroidVersion version = 3;
+  string device = 4;
+  string manufacturer = 5;
+  string model = 6;
+  string product = 7;
+  string build = 8;
+  string type = 9;
+  string tags = 10;
+  string incrementalVersion = 11;
+  int32 DPI = 12;
+  int32 resolutionHorizontal = 13;
+  int32 resolutionVertical = 14;
+  Architecture architecture = 15;
+  GPSLocation location = 16;
+  Timezone timezone = 17;
+}

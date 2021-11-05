@@ -3,18 +3,9 @@ package go_android_utils
 import (
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"math/rand"
 	"strconv"
 )
-
-type AndroidID struct {
-	id uint64
-}
-
-type auxAndroidID struct {
-	ID string `json:"id"`
-}
 
 func NewAndroidID() *AndroidID {
 	result := &AndroidID{}
@@ -61,28 +52,10 @@ func (id *AndroidID) IsNull() bool {
 }
 
 func (id *AndroidID) GetID() uint64 {
-	result := id.id
+	result := id.Id
 	return result
 }
 
 func (id *AndroidID) SetID(idN uint64) {
-	id.id = idN
-}
-
-// JSON Custom marshalling, required to even save AID at all
-
-func (id *AndroidID) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&auxAndroidID{
-		ID: id.ToHexString(),
-	})
-}
-
-func (id *AndroidID) UnmarshalJSON(data []byte) error {
-
-	aux := &auxAndroidID{}
-	err := json.Unmarshal(data, aux)
-	if err == nil {
-		err = id.FromHex(aux.ID)
-	}
-	return err
+	id.Id = idN
 }
