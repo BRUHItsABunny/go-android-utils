@@ -42,7 +42,7 @@ func AndroidVersionFromSDKString(sdkStr string) (AndroidVersion, error) {
 }
 
 func (version AndroidVersion) ToAndroidVersion() string {
-	return strings.ReplaceAll(version.String()[15:], "_", ".")
+	return strings.ReplaceAll(version.String()[1:], "_", ".")
 }
 
 func (version AndroidVersion) ToAndroidSDK() string {
