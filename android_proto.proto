@@ -54,7 +54,16 @@ message Locale {
   string countryISO = 2;
 }
 
+message SIMCard {
+  // With or without country code?
+  string phoneNumber = 1;
+  // Provider and country information
+  string MCC = 2;
+  string MNC = 3;
+}
+
 message Timezone {
+  // IANA standard
   string name = 1;
 }
 
@@ -76,4 +85,5 @@ message Device {
   Architecture architecture = 15;
   GPSLocation location = 16;
   Timezone timezone = 17;
+  repeated SIMCard simSlots = 18; // Dual SIM compatibility
 }
