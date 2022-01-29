@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 func NewAndroidID() *AndroidID {
@@ -22,6 +23,7 @@ func (id *AndroidID) FromHex(idStr string) error {
 }
 
 func (id *AndroidID) Random() error {
+	rand.Seed(time.Now().UnixNano())
 	b := make([]byte, 8)
 	_, err := rand.Read(b)
 	if err == nil {
