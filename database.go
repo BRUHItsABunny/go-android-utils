@@ -29,7 +29,7 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   1920,
-		Architecture:         Architecture_ARM64,
+		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 	"oneplus7t": {
 		Locale: &Locale{
@@ -48,7 +48,7 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   2400,
-		Architecture:         Architecture_ARM64,
+		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 	// "oneplus9": "",
 	"oneplus9pro": {
@@ -69,7 +69,7 @@ var DeviceDB = map[string]*Device{
 		DPI:                  600,
 		ResolutionHorizontal: 1440,
 		ResolutionVertical:   3216,
-		Architecture:         Architecture_ARM64,
+		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 }
 

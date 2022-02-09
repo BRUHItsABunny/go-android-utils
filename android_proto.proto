@@ -82,7 +82,7 @@ message Device {
   int32 DPI = 12;
   int32 resolutionHorizontal = 13;
   int32 resolutionVertical = 14;
-  Architecture architecture = 15;
+  repeated string abiList = 15;
   GPSLocation location = 16;
   Timezone timezone = 17;
   repeated SIMCard simSlots = 18; // Dual SIM compatibility

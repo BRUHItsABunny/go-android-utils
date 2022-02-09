@@ -323,10 +323,14 @@ func (m *Device) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x82
 	}
-	if m.Architecture != 0 {
-		i = encodeVarint(dAtA, i, uint64(m.Architecture))
-		i--
-		dAtA[i] = 0x78
+	if len(m.AbiList) > 0 {
+		for iNdEx := len(m.AbiList) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.AbiList[iNdEx])
+			copy(dAtA[i:], m.AbiList[iNdEx])
+			i = encodeVarint(dAtA, i, uint64(len(m.AbiList[iNdEx])))
+			i--
+			dAtA[i] = 0x7a
+		}
 	}
 	if m.ResolutionVertical != 0 {
 		i = encodeVarint(dAtA, i, uint64(m.ResolutionVertical))
@@ -595,8 +599,11 @@ func (m *Device) SizeVT() (n int) {
 	if m.ResolutionVertical != 0 {
 		n += 1 + sov(uint64(m.ResolutionVertical))
 	}
-	if m.Architecture != 0 {
-		n += 1 + sov(uint64(m.Architecture))
+	if len(m.AbiList) > 0 {
+		for _, s := range m.AbiList {
+			l = len(s)
+			n += 1 + l + sov(uint64(l))
+		}
 	}
 	if m.Location != nil {
 		l = m.Location.SizeVT()
@@ -1576,10 +1583,10 @@ func (m *Device) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 		case 15:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Architecture", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AbiList", wireType)
 			}
-			m.Architecture = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflow
@@ -1589,11 +1596,24 @@ func (m *Device) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Architecture |= Architecture(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AbiList = append(m.AbiList, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
 		case 16:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Location", wireType)
