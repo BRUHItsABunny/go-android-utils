@@ -10,13 +10,14 @@ import (
 
 // Extract from .txt
 func TestBunny(t *testing.T) {
-	f, _ := os.Open("mnc.txt")
+	f, _ := os.Open("./_resources/samples/mnc.txt")
 	body, _ := io.ReadAll(f)
 	bodyStr := string(body)
 
 	countries := map[string][]string{}
-	lines := strings.Split(bodyStr, "\n")
+	lines := strings.Split(bodyStr, "\r\n")
 	for _, line := range lines {
+		// fmt.Println(fmt.Sprintf("%#v", line))
 		components := strings.Split(line, "\t")
 		country := strings.ToUpper(components[2])
 		entries, exists := countries[country]
@@ -24,7 +25,10 @@ func TestBunny(t *testing.T) {
 			entries = []string{}
 		}
 
-		entries = append(entries, "{MNC: \""+components[1]+"\", MCC: \""+components[0]+"\"},")
+		if len(components) == 5 {
+			components = append(components, "")
+		}
+		entries = append(entries, fmt.Sprintf("{MNC: \"%s\", MCC: \"%s\", Carrier: \"%s\", CountryISO: \"%s\", CountryCode: \"%s\"},", components[1], components[0], components[5], strings.ToUpper(components[2]), components[4]))
 		countries[country] = entries
 	}
 

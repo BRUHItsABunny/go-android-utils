@@ -60,6 +60,9 @@ message SIMCard {
   // Provider and country information
   string MCC = 2;
   string MNC = 3;
+  string carrier = 4;
+  string countryISO = 5;
+  string countryCode = 6;
 }
 
 message Timezone {
