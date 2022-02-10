@@ -22,6 +22,7 @@ func randomSIMSlice(strSlice []*SIMCard) *SIMCard {
 	return strSlice[r.Intn(len(strSlice))]
 }
 
+// AvailableSIMCards Source: https://www.mcc-mnc.com/
 var AvailableSIMCards = map[string][]*SIMCard{
 	"AG": {
 		{MNC: "030", MCC: "344", Carrier: "APUA PCS", CountryISO: "AG", CountryCode: "1268"},
