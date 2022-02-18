@@ -28,8 +28,24 @@ func TestDeviceFromUserAgent(t *testing.T) {
 func TestRandomDevices(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		device := GetRandomDevice()
+		device.MacAddress.Generate("", false, true)
+		for _, sim := range device.SimSlots {
+			if sim.Imei != nil {
+				sim.Imei.Generate("", "")
+			}
+		}
 		fmt.Println(device.String())
 		fmt.Println(device.Location.ProviderString())
 		time.Sleep(5 * time.Second)
 	}
+}
+
+func TestMACGeneration(t *testing.T) {
+	// When looking up the result of this MAC it should give us "OnePlus Electronics (Shenzhen) Co., Ltd." for OUI "A091A2"
+	mac := &MAC{
+		OUI:     "A091A2",
+		Address: "",
+	}
+	fmt.Println(mac.Generate("", true, true))
+	fmt.Println(mac.PrettyFormat(":"))
 }

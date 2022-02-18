@@ -1,6 +1,8 @@
 package go_android_utils
 
 import (
+	"encoding/hex"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -88,4 +90,53 @@ func (device *Device) FormatUserAgent(format string) string {
 func (device *Device) GetFingerprint() string {
 	result := device.Manufacturer + "/" + device.Product + "/" + device.Device + ":" + device.Version.ToAndroidVersion() + "/" + device.Build + "/" + device.IncrementalVersion + ":" + device.Type + "/" + device.Tags
 	return result
+}
+
+func (m *MAC) PrettyFormat(separator string) string {
+	macChunks := groupSubString(m.Address, "f", 2)
+	return strings.Join(macChunks, separator)
+}
+
+func (m *MAC) Generate(oui string, multiCast, uua bool) (string, error) {
+	if len(oui) < 1 {
+		oui = m.OUI
+	}
+	oui = strings.Map(removeAllNONHex, strings.ToLower(oui))
+	ouiChunks := groupSubString(oui, "f", 2)
+
+	macBytes := make([]byte, 6)
+
+	// Randomization and settings, to be overwritten by prefix if set
+	rand.Read(macBytes[:])
+	if multiCast {
+		macBytes[0] |= 0
+	} else {
+		macBytes[0] ^= 1
+	}
+	if uua {
+		macBytes[0] ^= 1 << 1
+	} else {
+		macBytes[0] |= 1 << 1
+	}
+
+	var (
+		err    error
+		hexInt int64
+	)
+	limit := 6
+	if len(ouiChunks) < limit {
+		limit = len(ouiChunks)
+	}
+	for i := 0; i < limit; i++ {
+		hexInt, err = strconv.ParseInt(ouiChunks[i], 16, 64)
+		if err != nil {
+			return "", err
+		}
+		macBytes[i] = byte(hexInt)
+	}
+
+	m.Address = hex.EncodeToString(macBytes)
+
+	return m.Address, nil
+
 }

@@ -2,8 +2,6 @@ package go_android_utils
 
 import (
 	"google.golang.org/protobuf/proto"
-	"math/rand"
-	"time"
 )
 
 func GetRandomDBSIMCard(countryISO string) *SIMCard {
@@ -12,14 +10,9 @@ func GetRandomDBSIMCard(countryISO string) *SIMCard {
 		countryISO = randomStrSlice(AvailableCountries)
 	}
 	simCard := randomSIMSlice(AvailableSIMCards[countryISO])
+	simCard.Imei = new(IMEI)
 
 	return proto.Clone(simCard).(*SIMCard)
-}
-
-func randomSIMSlice(strSlice []*SIMCard) *SIMCard {
-	s := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(s)
-	return strSlice[r.Intn(len(strSlice))]
 }
 
 // AvailableSIMCards Source: https://www.mcc-mnc.com/

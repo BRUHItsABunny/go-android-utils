@@ -29,7 +29,23 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   1920,
-		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
+		SimSlots: []*SIMCard{
+			{
+				Imei: &IMEI{
+					TAC: "86463003",
+				},
+			},
+			{
+				Imei: &IMEI{
+					TAC: "86463003",
+				},
+			},
+		},
+		MacAddress: &MAC{
+			OUI:     "A091A2",
+			Address: "",
+		},
+		AbiList: []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 	"oneplus7t": {
 		Locale: &Locale{
@@ -48,7 +64,23 @@ var DeviceDB = map[string]*Device{
 		DPI:                  420,
 		ResolutionHorizontal: 1080,
 		ResolutionVertical:   2400,
-		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
+		SimSlots: []*SIMCard{
+			{
+				Imei: &IMEI{
+					TAC: "86789104",
+				},
+			},
+			{
+				Imei: &IMEI{
+					TAC: "86789104",
+				},
+			},
+		},
+		MacAddress: &MAC{
+			OUI:     "A091A2",
+			Address: "",
+		},
+		AbiList: []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 	// "oneplus9": "",
 	"oneplus9pro": {
@@ -69,7 +101,18 @@ var DeviceDB = map[string]*Device{
 		DPI:                  600,
 		ResolutionHorizontal: 1440,
 		ResolutionVertical:   3216,
-		AbiList:              []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
+		SimSlots: []*SIMCard{
+			{
+				Imei: &IMEI{
+					TAC: "86381505",
+				},
+			},
+		},
+		MacAddress: &MAC{
+			OUI:     "A091A2",
+			Address: "",
+		},
+		AbiList: []string{"arm64-v8a", "armeabi-v7a", "armeabi"},
 	},
 }
 
@@ -90,7 +133,17 @@ func GetDBDevice(key string) (*Device, bool) {
 	// Device from DB needs to be random ID
 	device.Id = NewAndroidID()
 	device.Location = GetRandomDBLocation(device.Locale.GetCountryISO())
-	device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
+	if device.SimSlots == nil || len(device.SimSlots) == 0 {
+		device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
+	} else {
+		for _, sim := range device.SimSlots {
+			sim.Randomize(device.Locale.GetCountryISO())
+		}
+	}
+
+	if device.MacAddress == nil {
+		device.MacAddress = new(MAC)
+	}
 	return device, found
 }
 
@@ -102,7 +155,17 @@ func GetRandomDevice() *Device {
 	// Device from DB needs to be random ID
 	device.Id = NewAndroidID()
 	device.Location = GetRandomDBLocation(device.Locale.GetCountryISO())
-	device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
+	if device.SimSlots == nil || len(device.SimSlots) == 0 {
+		device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
+	} else {
+		for _, sim := range device.SimSlots {
+			sim.Randomize(device.Locale.GetCountryISO())
+		}
+	}
+
+	if device.MacAddress == nil {
+		device.MacAddress = new(MAC)
+	}
 	return device
 }
 

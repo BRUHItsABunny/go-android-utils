@@ -27,14 +27,6 @@ enum AndroidVersion {
     V12_0 = 31;
 }
 
-enum Architecture {
-   Architecture_NONE = 0;
-   ARMEABI = 1;
-   ARM64 = 2;
-   X86 = 3;
-   X86_64 = 4;
-}
-
 enum LocationProvider {
     LocationProvider_NONE = 0; // Treat as random
     GPS = 1;
@@ -63,11 +55,41 @@ message SIMCard {
   string carrier = 4;
   string countryISO = 5;
   string countryCode = 6;
+  IMEI imei = 7;
+  MEID meid = 8;
+}
+
+message IMEI {
+  string TAC = 1;
+  // src: https://en.wikipedia.org/wiki/International_Mobile_Equipment_Identity
+  // AA	-	BB	BB	BB	-	CC	CC	CC	D
+  // Where AA and BB = TAC, CC = serial (randomized) and D = Luhn validation
+  string imei = 2;
+}
+
+message MEID {
+  string RegionCode = 1;
+  string ManufacturerCode = 2;
+  // src: https://en.wikipedia.org/wiki/Mobile_equipment_identifier
+  // R R	X	X	X	X	X	X	Z	Z	Z	Z	Z	Z	C
+  // Where R = region, X = manufacturer, Z = serial (randomized) and C = Luhn validation
+  string meid = 3;
+}
+
+message MAC {
+  string OUI = 1;
+  string address = 2;
 }
 
 message Timezone {
   // IANA standard
   string name = 1;
+}
+
+message DeviceSoftware {
+  map<string, string> softwareMetaData = 1;
+  // app package : version string
+  map<string, string> appMetaData = 2;
 }
 
 message Device {
@@ -89,4 +111,6 @@ message Device {
   GPSLocation location = 16;
   Timezone timezone = 17;
   repeated SIMCard simSlots = 18; // Dual SIM compatibility
+  MAC macAddress = 19;
+  DeviceSoftware software = 20;
 }
