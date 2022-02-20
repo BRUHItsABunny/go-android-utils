@@ -135,15 +135,18 @@ func GetDBDevice(key string) (*Device, bool) {
 	device.Location = GetRandomDBLocation(device.Locale.GetCountryISO())
 	if device.SimSlots == nil || len(device.SimSlots) == 0 {
 		device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
-	} else {
-		for _, sim := range device.SimSlots {
-			sim.Randomize(device.Locale.GetCountryISO())
-		}
 	}
-
+	for _, sim := range device.SimSlots {
+		sim.Randomize(device.Locale.GetCountryISO())
+		if sim.Imei == nil {
+			sim.Imei = &IMEI{}
+		}
+		sim.Imei.Generate("", "")
+	}
 	if device.MacAddress == nil {
 		device.MacAddress = new(MAC)
 	}
+	device.MacAddress.Generate("", false, true)
 	return device, found
 }
 
@@ -157,15 +160,19 @@ func GetRandomDevice() *Device {
 	device.Location = GetRandomDBLocation(device.Locale.GetCountryISO())
 	if device.SimSlots == nil || len(device.SimSlots) == 0 {
 		device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
-	} else {
-		for _, sim := range device.SimSlots {
-			sim.Randomize(device.Locale.GetCountryISO())
+	}
+	for _, sim := range device.SimSlots {
+		sim.Randomize(device.Locale.GetCountryISO())
+		if sim.Imei == nil {
+			sim.Imei = &IMEI{}
 		}
+		sim.Imei.Generate("", "")
 	}
 
 	if device.MacAddress == nil {
 		device.MacAddress = new(MAC)
 	}
+	device.MacAddress.Generate("", false, true)
 	return device
 }
 
