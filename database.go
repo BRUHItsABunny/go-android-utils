@@ -10,6 +10,7 @@ import (
 
 // Here we store a few devices and way to get them, just easy access in case you want to prototype a few devices in a library fast
 // TODO: Actually add a few devices here...
+// TODO: Turn this into an interface to customize with custom backend
 var DeviceDB = map[string]*Device{
 	// "oneplus3": "",
 	"oneplus5": {
