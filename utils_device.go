@@ -92,6 +92,27 @@ func (device *Device) GetFingerprint() string {
 	return result
 }
 
+func (device *Device) Randomize() { // I do recommend setting to Locale field of the device though
+	// Allow device randomization with existing Device instance - useful if you store devices in database and want to randomize upon retrieval
+	device.Id = NewAndroidID()
+	device.Location = GetRandomDBLocation(device.Locale.GetCountryISO())
+	if device.SimSlots == nil || len(device.SimSlots) == 0 {
+		device.SimSlots = []*SIMCard{GetRandomDBSIMCard(device.Locale.GetCountryISO())}
+	}
+	for _, sim := range device.SimSlots {
+		sim.Randomize(device.Locale.GetCountryISO())
+		if sim.Imei == nil {
+			sim.Imei = &IMEI{}
+		}
+		sim.Imei.Generate("", "")
+	}
+
+	if device.MacAddress == nil {
+		device.MacAddress = new(MAC)
+	}
+	device.MacAddress.Generate("", false, true)
+}
+
 func (m *MAC) PrettyFormat(separator string) string {
 	macChunks := groupSubString(m.Address, "f", 2)
 	return strings.Join(macChunks, separator)
